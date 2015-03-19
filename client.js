@@ -251,18 +251,26 @@ function draw(gamestate){
 			txtH.setAttribute("y",50)
 			txtH.setAttribute("text-anchor","middle")
 			txtH.setAttribute("fill","green")
-			var txtHNode = document.createTextNode("Score: "+Math.floor(gamestate.highScore))
+			var txtHNode = document.createTextNode("High: "+Math.floor(gamestate.highScore))
 			txtH.appendChild(txtHNode);
 		}
 		svg.appendChild(txt)
+	//::Input
+		var inp = document.createElementNS(NS, "rect")
+		inp.setAttribute("x",0)
+		inp.setAttribute("y",0)
+		inp.setAttribute("width",gamestate.field_w)
+		inp.setAttribute("height",gamestate.field_h)
+		inp.setAttribute("fill-opacity",0)
+		svg.appendChild(inp)
 	//Show
 	display.appendChild(svg);
-	svg.addEventListener("mousedown", mouseDown, false);
-    svg.addEventListener("mouseup", mouseUp, false);
-  	svg.addEventListener("mousemove", mouseMove, false);	
-  	svg.addEventListener("touchstart", touchStart, false);
-    svg.addEventListener("touchend", touchEnd, false);
-  	svg.addEventListener("touchmove", touchMove, false);
+	inp.addEventListener("mousedown", mouseDown, false);
+    inp.addEventListener("mouseup", mouseUp, false);
+  	inp.addEventListener("mousemove", mouseMove, false);	
+  	inp.addEventListener("touchstart", touchStart, false);
+    inp.addEventListener("touchend", touchEnd, false);
+  	inp.addEventListener("touchmove", touchMove, false);
 }
 //Page resize stuff
 function refreshViewPortDimensions(gamestate, div){
