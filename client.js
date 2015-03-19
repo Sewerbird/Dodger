@@ -243,6 +243,12 @@ function draw(gamestate){
   	svg.addEventListener("touchdown", mouseDown, false);
     svg.addEventListener("touchup", mouseUp, false);
   	svg.addEventListener("touchmove", mouseMove, false);
+  	svg.mousedown = mouseDown
+  	svg.mouseup = mouseUp
+  	svg.mousemove = mouseMove
+  	svg.touchstart = mouseDown
+  	svg.touchend = mouseEnd
+  	svg.touchmove = mouseMove
 }
 //Page resize stuff
 function refreshViewPortDimensions(gamestate, div){
