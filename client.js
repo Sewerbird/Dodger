@@ -151,6 +151,7 @@ function touchStart(evt)
 function touchMove(evt)
 {
 	evt.preventDefault()
+	console.log(evt.changedTouches[0])
 	gameState.mouse_pos.x = evt.changedTouches[0].clientX
 	gameState.mouse_pos.y = evt.changedTouches[0].clientY
 }
