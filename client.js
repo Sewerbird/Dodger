@@ -142,6 +142,25 @@ function mouseUp(evt)
 	gameState.mouse_pos.locked = true
 }
 
+function touchStart(evt)
+{
+	evt.preventDefault()
+	gameState.mouse_pos.locked = false
+}
+
+function touchMove(evt)
+{
+	evt.preventDefault()
+	gameState.mouse_pos.x = evt.touches[0].offsetX
+	gameState.mouse_pos.y = evt.touches[0].offsetY
+}
+
+function touchEnd(evt)
+{
+	evt.preventDefault()
+	gameState.mouse_pos.locked = true
+}
+
 function draw(gamestate){
 	var display = document.getElementById(gamestate.display)
 	//Clear
@@ -240,15 +259,9 @@ function draw(gamestate){
 	svg.addEventListener("mousedown", mouseDown, false);
     svg.addEventListener("mouseup", mouseUp, false);
   	svg.addEventListener("mousemove", mouseMove, false);	
-  	svg.addEventListener("touchdown", mouseDown, false);
-    svg.addEventListener("touchup", mouseUp, false);
-  	svg.addEventListener("touchmove", mouseMove, false);
-  	svg.mousedown = mouseDown
-  	svg.mouseup = mouseUp
-  	svg.mousemove = mouseMove
-  	svg.touchstart = mouseDown
-  	svg.touchend = mouseUp
-  	svg.touchmove = mouseMove
+  	svg.addEventListener("touchstart", touchStart, false);
+    svg.addEventListener("touchend", touchEnd, false);
+  	svg.addEventListener("touchmove", touchMove, false);
 }
 //Page resize stuff
 function refreshViewPortDimensions(gamestate, div){
