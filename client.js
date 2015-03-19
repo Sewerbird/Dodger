@@ -222,14 +222,27 @@ function draw(gamestate){
 		txt.setAttribute("y",25)
 		txt.setAttribute("text-anchor","middle")
 		txt.setAttribute("fill",_.isFinite(gamestate.highScore) && gamestate.highScore < gamestate.score?"#66FF66":"green")
-		var txtNode = document.createTextNode("Score: "+Math.floor(gamestate.score)+(_.isFinite(gamestate.highScore)?"/("+gamestate.highScore+")":""))
+		var txtNode = document.createTextNode("Score: "+Math.floor(gamestate.score))
 		txt.appendChild(txtNode);
+		if(_.isFinite(gamestate.highScore))
+		{
+			var txtH = document.createElementNS(NS,"text")
+			txtH.setAttribute("x",gamestate.field_w/2)
+			txtH.setAttribute("y",50)
+			txtH.setAttribute("text-anchor","middle")
+			txtH.setAttribute("fill","green")
+			var txtHNode = document.createTextNode("Score: "+Math.floor(gamestate.highScore))
+			txtH.appendChild(txtHNode);
+		}
 		svg.appendChild(txt)
 	//Show
 	display.appendChild(svg);
 	svg.addEventListener("mousedown", mouseDown, false);
     svg.addEventListener("mouseup", mouseUp, false);
-  	svg.addEventListener("mousemove", mouseMove, false);
+  	svg.addEventListener("mousemove", mouseMove, false);	
+  	svg.addEventListener("touchdown", mouseDown, false);
+    svg.addEventListener("touchup", mouseUp, false);
+  	svg.addEventListener("touchmove", mouseMove, false);
 }
 //Page resize stuff
 function refreshViewPortDimensions(gamestate, div){
