@@ -247,7 +247,7 @@ function draw(gamestate){
   	svg.mouseup = mouseUp
   	svg.mousemove = mouseMove
   	svg.touchstart = mouseDown
-  	svg.touchend = mouseEnd
+  	svg.touchend = mouseUp
   	svg.touchmove = mouseMove
 }
 //Page resize stuff
