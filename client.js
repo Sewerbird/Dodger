@@ -126,9 +126,12 @@ function getDistance(pos_a,pos_b){
 function mouseDown(evt)
 {
 	evt.preventDefault()
+	console.log("setting",evt.target.getBoundingClientRect())
+	gameState.mouse_pos.lastRect = evt.target.getBoundingClientRect();
 	var pos = getPosition(evt);
 	gameState.mouse_pos.locked = false;
-	gameState.mouse_pos = pos;
+	gameState.mouse_pos.x = pos.x;
+	gameState.mouse_pos.y = pos.y;
 }
 
 function mouseMove(evt)
@@ -137,7 +140,8 @@ function mouseMove(evt)
 	var pos = getPosition(evt)
 	if(!gameState.mouse_pos.locked)
 	{
-		gameState.mous_pos = pos;
+		gameState.mouse_pos.x = pos.x;
+		gameState.mouse_pos.y = pos.y;
 	}
 }
 
@@ -149,29 +153,39 @@ function mouseUp(evt)
 
 function touchStart(evt)
 {
+	evt.preventDefault()
 	mouseDown(evt)
 }
 
 function touchMove(evt)
 {
+	evt.preventDefault()
 	mouseMove(evt)
 }
 
 function touchEnd(evt)
 {
+	evt.preventDefault()
 	mouseUp(evt)
 }
 function getPosition(e) {
-	var canvas = e.target
-	if ( e.targetTouches && e.targetTouches.length > 0) {
-		var touch = e.targetTouches[0];
-		var x = touch.pageX - canvas.offsetLeft;
-		var y = touch.pageY - canvas.offsetTop;
+	if ( e.changedTouches && e.changedTouches.length > 0) {
+		var rect = e.target.getBoundingClientRect();
+		if(gameState.mouse_pos.lastRect !== undefined)//zero sized, use last one
+		{
+			console.log("using lastrect")
+			rect = gameState.mouse_pos.lastRect
+		}
+		var touch = e.changedTouches[0];
+		var x = touch.clientX - rect.left;
+		var y = touch.clientY - rect.top;
+		console.log("t",gameState.mouse_pos.lastRect,touch,rect)
 		return {x:x,y:y};
 	} else {
 		var rect = e.target.getBoundingClientRect();
-		var x = e.pageX - canvas.offsetLeft;
-		var y = e.pageY - canvas.offsetTop;
+		var x = e.clientX - rect.left;
+		var y = e.clientY - rect.top;
+		console.log("m",e,rect)
 		return {x:x,y:y};
 	}
 }
