@@ -44,7 +44,7 @@ function reset(gamestate,displayDiv){
 function update(gamestate, dt){
 	if(!gamestate.player.okay)
 	{
-		gameState = reset(gamestate,gamestate.display)
+		//gameState = reset(gamestate,gamestate.display)
 		return;
 	}
 	gamestate.time += dt
@@ -126,14 +126,19 @@ function getDistance(pos_a,pos_b){
 function mouseDown(evt)
 {
 	evt.preventDefault()
-	gameState.mouse_pos.locked = false
+	var pos = getPosition(evt);
+	gameState.mouse_pos.locked = false;
+	gameState.mouse_pos = pos;
 }
 
 function mouseMove(evt)
 {
 	evt.preventDefault()
-	gameState.mouse_pos.x = evt.offsetX
-	gameState.mouse_pos.y = evt.offsetY
+	var pos = getPosition(evt)
+	if(!gameState.mouse_pos.locked)
+	{
+		gameState.mous_pos = pos;
+	}
 }
 
 function mouseUp(evt)
@@ -144,26 +149,64 @@ function mouseUp(evt)
 
 function touchStart(evt)
 {
-	evt.preventDefault()
-	gameState.mouse_pos.locked = false
+	mouseDown(evt)
 }
 
 function touchMove(evt)
 {
-	evt.preventDefault()
-	console.log(evt.changedTouches[0])
-	gameState.mouse_pos.x = evt.changedTouches[0].clientX
-	gameState.mouse_pos.y = evt.changedTouches[0].clientY
+	mouseMove(evt)
 }
 
 function touchEnd(evt)
 {
-	evt.preventDefault()
-	gameState.mouse_pos.locked = true
+	mouseUp(evt)
+}
+function getPosition(e) {
+	var canvas = e.target
+	if ( e.targetTouches && e.targetTouches.length > 0) {
+		var touch = e.targetTouches[0];
+		var x = touch.pageX - canvas.offsetLeft;
+		var y = touch.pageY - canvas.offsetTop;
+		return {x:x,y:y};
+	} else {
+		var rect = e.target.getBoundingClientRect();
+		var x = e.pageX - canvas.offsetLeft;
+		var y = e.pageY - canvas.offsetTop;
+		return {x:x,y:y};
+	}
 }
 
 function draw(gamestate){
 	var display = document.getElementById(gamestate.display)
+	if(!gamestate.player.okay)
+	{
+		var svg = document.getElementById("mdSVGvp")
+		var NS="http://www.w3.org/2000/svg";
+		var fade = document.createElementNS(NS,"rect")
+		fade.setAttribute("width",600)
+		fade.setAttribute("height",400)
+		fade.setAttribute("fill","black")
+		fade.setAttribute("fill-opacity", 0.7)
+		svg.appendChild(fade)
+		var txt = document.createElementNS(NS,"text")
+		txt.setAttribute("x",300)
+		txt.setAttribute("y",200)
+		txt.setAttribute("text-anchor","middle")
+		txt.setAttribute("fill","white")
+		var txtNode = document.createTextNode("THE END")
+		var txt2 = document.createElementNS(NS,"text")
+		txt2.setAttribute("x",300)
+		txt2.setAttribute("y",250)
+		txt2.setAttribute("text-anchor","middle")
+		txt2.setAttribute("fill","white")
+		var scoreNode = document.createTextNode("Score: "+Math.floor(gamestate.score))
+		txt.appendChild(txtNode);
+		txt2.appendChild(scoreNode);
+		fade.onclick = window.location.reload.bind(window.location)
+		svg.appendChild(txt)
+		svg.appendChild(txt2)
+		return;
+	}
 	//Clear
 	while (display.firstChild) {
 	    display.removeChild(display.firstChild);
