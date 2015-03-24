@@ -1,10 +1,29 @@
 var gameState = {}
-function run(tgt){
+function run(tgt,scrTgt){
+	gameState.scoreboard = new Firebase("https://sewerbird-high-score.firebaseio.com/Dodger"
+	initScoreboard(scrTgt, gameState.scoreboard)
 	gameState = reset(gameState,tgt)
 	setInterval(function(){
 		update(gameState,0.01)
 	},10)
 	setTimeout(window.onresize,11)
+}
+function initScoreboard(scoreboardDiv, db_fire_ref){
+	getScores(db_fire_ref,function(results){
+		var div = document.getElementById(scoreboardDiv)
+		_.each(results, function(data, user){
+			var tr = document.createElement("tr")
+			var tdUsr = document.createElement("td")
+			var tdScr = document.createElement("td")
+			var usr = document.createTextNode(user)
+			var scr = document.createTextNode(data.score)
+			tdUsr.appendChild(usr)
+			tdScr.appendChild(scr)
+			tr.appendChild(tdUsr)
+			tr.appendChild(tdScr)
+			div.appendChild(tr)
+		})
+	})
 }
 function reset(gamestate,displayDiv){
 	refreshViewPortDimensions(gamestate, displayDiv)
@@ -33,6 +52,7 @@ function reset(gamestate,displayDiv){
 		viewport : gamestate.viewport,
 		sprng: seed(2015),
 		display: displayDiv,
+		scoreboard : gamestate.scoreboard,
 		mouse_pos: {
 			x:250,
 			y:250,
@@ -173,21 +193,35 @@ function getPosition(e) {
 		var rect = e.target.getBoundingClientRect();
 		if(gameState.mouse_pos.lastRect !== undefined)//zero sized, use last one
 		{
-			console.log("using lastrect")
 			rect = gameState.mouse_pos.lastRect
 		}
 		var touch = e.changedTouches[0];
 		var x = touch.clientX - rect.left;
 		var y = touch.clientY - rect.top;
-		console.log("t",gameState.mouse_pos.lastRect,touch,rect)
 		return {x:x,y:y};
 	} else {
 		var rect = e.target.getBoundingClientRect();
 		var x = e.clientX - rect.left;
 		var y = e.clientY - rect.top;
-		console.log("m",e,rect)
 		return {x:x,y:y};
 	}
+}
+
+function getScores(db_game_ref, callback)
+{
+	db_game_ref.orderByChild("score").on("value", function(snapshot){
+		var results = snapshot.val()
+		callback(results)
+	})
+}
+function submitScore(db_game_ref, username, score)
+{
+	var tgt = db_game_ref.child("/"+username)
+	tgt.once("value",function(data){
+		var results = data.val()
+		if(results && results.score < score)
+			tgt.update({score:score})
+	})
 }
 
 function draw(gamestate){
